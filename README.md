@@ -2,7 +2,7 @@
 
 A single-page dashboard for the latest in AI — **academic papers from arXiv**, **trending AI news from Hacker News**, an attention **Trend Radar**, a relational **news graph**, an **outlook quadrant**, and a newsletter sign-up. Optional AI features (summaries, headline scoring) are powered by free [NVIDIA NIM](https://build.nvidia.com) models.
 
-> © Yvonne Leung AI Consulting Inc. 2026. All rights reserved.
+> © 2026 Yvonne Leung AI Consulting Inc. · Released under the [MIT License](LICENSE).
 
 ## Features
 
@@ -66,4 +66,4 @@ Because it has a Python backend, **GitHub Pages alone won't run it** (Pages is s
 
 ## License
 
-© Yvonne Leung AI Consulting Inc. 2026. All rights reserved.
+Released under the [MIT License](LICENSE). © 2026 Yvonne Leung AI Consulting Inc.
