@@ -58,11 +58,36 @@ The site works without any API key — only the AI features (summaries, quadrant
 - [Hacker News (Algolia API)](https://hn.algolia.com/api) — news
 - [NVIDIA NIM](https://build.nvidia.com) — LLM summaries & scoring (optional)
 
-## Deployment notes
+## Project structure
 
-Because it has a Python backend, **GitHub Pages alone won't run it** (Pages is static-only — the arXiv proxy and all AI routes would fail). Host it somewhere that runs Python, e.g. **Vercel** (Python serverless functions), Render, Railway, Fly.io, or a small VPS.
+```
+index.html, styles.css, app.js   # static frontend (no build step)
+server.py                         # local dev server (serves site + API), macOS
+api/                              # Vercel serverless functions (Linux)
+  _lib.py                         #   shared helpers (NVIDIA, etc.)
+  arxiv.py  ai-status.py
+  summarize.py  score.py  paper-image.py
+requirements.txt  vercel.json     # Vercel config (Pillow, function timeout)
+```
 
-> ⚠️ **`GET /api/paper-image` is macOS-specific** — it uses `qlmanage` (Quick Look) and `sips`. On Linux hosts (including Vercel) this route needs a rewrite using `pdfimages`/Pillow or similar. Every other route is portable.
+`server.py` and the `api/` functions share the same logic; locally you run `server.py`, and on Vercel each `api/*.py` is its own function.
+
+## Deployment
+
+**GitHub Pages won't work** — it's static-only and can't run the Python backend (the arXiv proxy and all AI routes would fail). Host it where Python runs.
+
+### Deploy to Vercel
+
+1. Push this repo to GitHub (already done).
+2. Go to <https://vercel.com/new> and **import the repo**. Vercel auto-detects the static files (served from the root) and the `api/*.py` Python serverless functions — no extra config needed.
+3. In **Project Settings → Environment Variables**, add:
+   - `NVIDIA_API_KEY` = your `nvapi-...` key
+   - `NVIDIA_MODEL` = `meta/llama-3.1-8b-instruct` (optional)
+4. **Deploy.** The site and `/api/*` routes run on the same origin, so everything works.
+
+> **Note on paper figures:** the Vercel version (`api/paper-image.py`) extracts embedded JPEG figures with **Pillow**. Papers whose figures are all vector/PNG won't get a thumbnail (the card still renders). The local `server.py` additionally renders a first-page preview via macOS Quick Look — that fallback is macOS-only and isn't available on Vercel.
+
+Other Python hosts (Render, Railway, Fly.io, a VPS) work too — run `server.py`, or adapt the `api/` functions.
 
 ## License
 
