@@ -57,7 +57,8 @@ def fetch_article_text(url):
     """Best-effort: fetch a page and strip tags to plain-ish text."""
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "AI-Pulse/1.0"})
-        with urllib.request.urlopen(req, timeout=8) as resp:
+        # Keep short so summarize fits within Vercel's default function timeout.
+        with urllib.request.urlopen(req, timeout=6) as resp:
             ctype = resp.headers.get("Content-Type", "")
             if "html" not in ctype and "text" not in ctype:
                 return ""

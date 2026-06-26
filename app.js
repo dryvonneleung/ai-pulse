@@ -121,7 +121,7 @@ async function ensurePaperFigure(arxivId, thumb) {
     return;
   }
   try {
-    const res = await fetch(`/api/paper-image?id=${encodeURIComponent(arxivId)}`);
+    const res = await fetch(`/api/paper_image?id=${encodeURIComponent(arxivId)}`);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || `Server ${res.status}`);
     figureCache[arxivId] = data.dataUrl;
@@ -857,7 +857,7 @@ function renderOutlook(rows) {
 
 async function checkAi() {
   try {
-    const res = await fetch("/api/ai-status");
+    const res = await fetch("/api/ai_status");
     const status = res.ok ? await res.json() : {};
     aiEnabled = status.enabled === true;
   } catch (_) {

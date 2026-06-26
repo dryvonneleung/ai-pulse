@@ -22,8 +22,8 @@ This is **not** a pure static site. A small Python server (`server.py`) serves t
 | `GET /api/arxiv` | arXiv's API sends **no CORS headers**, so the browser can't call it directly — the server proxies it. |
 | `POST /api/summarize` | Calls NVIDIA NIM to summarize a news story or paper abstract. Keeps the **API key server-side**. |
 | `POST /api/score` | Scores headlines/summaries for the quadrant (predictability + sentiment) via NVIDIA NIM. |
-| `GET /api/paper-image` | Downloads a paper's PDF and extracts a figure (or renders the first page). **Uses macOS tools — see note below.** |
-| `GET /api/ai-status` | Tells the frontend whether AI features are enabled. |
+| `GET /api/paper_image` | Downloads a paper's PDF and extracts a figure (or renders the first page). **Uses macOS tools locally — see note below.** |
+| `GET /api/ai_status` | Tells the frontend whether AI features are enabled. |
 
 The frontend is **vanilla HTML/CSS/JS — no build step, no dependencies.**
 
@@ -65,9 +65,9 @@ index.html, styles.css, app.js   # static frontend (no build step)
 server.py                         # local dev server (serves site + API), macOS
 api/                              # Vercel serverless functions (Linux)
   _lib.py                         #   shared helpers (NVIDIA, etc.)
-  arxiv.py  ai-status.py
-  summarize.py  score.py  paper-image.py
-requirements.txt  vercel.json     # Vercel config (Pillow, function timeout)
+  arxiv.py  ai_status.py
+  summarize.py  score.py  paper_image.py
+requirements.txt                  # Pillow, for paper_image figure extraction
 ```
 
 `server.py` and the `api/` functions share the same logic; locally you run `server.py`, and on Vercel each `api/*.py` is its own function.

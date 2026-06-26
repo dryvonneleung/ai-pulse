@@ -51,10 +51,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if parsed.path == "/api/arxiv":
             self.handle_arxiv(urllib.parse.parse_qs(parsed.query))
             return
-        if parsed.path == "/api/ai-status":
+        if parsed.path == "/api/ai_status":
             self.send_json({"enabled": bool(NVIDIA_API_KEY), "model": NVIDIA_MODEL})
             return
-        if parsed.path == "/api/paper-image":
+        if parsed.path == "/api/paper_image":
             self.handle_paper_image(urllib.parse.parse_qs(parsed.query))
             return
         super().do_GET()
