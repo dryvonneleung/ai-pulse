@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Pulse — Latest AI Papers & News</title>
+  <meta name="description" content="The latest AI academic papers from arXiv and trending AI news, in one place. Subscribe to the newsletter." />
+  <link rel="preconnect" href="https://export.arxiv.org" />
+  <link rel="preconnect" href="https://hn.algolia.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">◆</span>
+        <span>AI&nbsp;Pulse</span>
+      </a>
+      <nav class="nav">
+        <a href="#papers">Papers</a>
+        <a href="#news">News</a>
+        <a href="#subscribe">Subscribe</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Updated live</p>
+        <h1>The latest in artificial intelligence,<br />research and news, in one feed.</h1>
+        <p class="lede">Fresh academic papers straight from arXiv and the AI stories the world is talking about today. Get the highlights in your inbox every week.</p>
+        <a class="btn btn-primary" href="#subscribe">Subscribe to the newsletter</a>
+      </div>
+    </section>
+
+    <!-- TREND RADAR -->
+    <div class="wrap">
+      <section id="trends" class="panel trends">
+        <div class="panel-head">
+          <h2>📡 Trend Radar</h2>
+          <span class="trends-sub">AI attention momentum · last 6 months</span>
+        </div>
+        <p id="trend-outlook" class="trend-outlook"></p>
+        <div id="trend-grid" class="trend-grid" aria-live="polite"></div>
+        <p class="source-note trends-caveat">
+          A directional read of <strong>Hacker News discussion volume</strong> by topic — a measure of
+          <em>attention</em>, not a capability forecast. Small samples; the outlook is speculative.
+        </p>
+      </section>
+    </div>
+
+    <div class="wrap columns">
+      <!-- PAPERS -->
+      <section id="papers" class="panel">
+        <div class="panel-head">
+          <h2>Latest AI papers</h2>
+          <div class="controls">
+            <label class="sr-only" for="paper-cat">Category</label>
+            <select id="paper-cat">
+              <option value="cs.AI">Artificial Intelligence (cs.AI)</option>
+              <option value="cs.LG">Machine Learning (cs.LG)</option>
+              <option value="cs.CL">Computation &amp; Language (cs.CL)</option>
+              <option value="cs.CV">Computer Vision (cs.CV)</option>
+              <option value="stat.ML">Stats — ML (stat.ML)</option>
+            </select>
+            <button id="paper-refresh" class="btn btn-ghost" type="button">Refresh</button>
+          </div>
+        </div>
+        <p class="source-note">Source: <a href="https://arxiv.org" target="_blank" rel="noopener">arXiv.org</a></p>
+        <div id="papers-list" class="cards" aria-live="polite"></div>
+      </section>
+
+      <!-- NEWS -->
+      <section id="news" class="panel">
+        <div class="panel-head">
+          <h2>Trending AI news</h2>
+          <div class="controls">
+            <label class="sr-only" for="news-sort">Sort</label>
+            <select id="news-sort">
+              <option value="points">Most popular</option>
+              <option value="comments">Most discussed</option>
+              <option value="recent">Most recent</option>
+            </select>
+            <button id="news-refresh" class="btn btn-ghost" type="button">Refresh</button>
+          </div>
+        </div>
+        <p class="source-note">Source: <a href="https://news.ycombinator.com" target="_blank" rel="noopener">Hacker News</a></p>
+
+        <!-- Popularity-by-topic dashboard -->
+        <div id="news-dashboard" class="dashboard" aria-label="Popularity by topic"></div>
+
+        <!-- Topic filter chips -->
+        <div id="news-topics" class="chips" role="tablist" aria-label="Filter by topic"></div>
+
+        <div id="news-list" class="cards" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <!-- NEWS RELATIONAL GRAPH -->
+    <div class="wrap">
+      <section id="graph" class="panel">
+        <div class="panel-head">
+          <h2>🕸️ News network</h2>
+          <span class="trends-sub">Stories linked to their topics · drag nodes, hover to focus</span>
+        </div>
+        <div id="graph-legend" class="graph-legend"></div>
+        <div id="news-graph" class="news-graph"></div>
+      </section>
+    </div>
+
+    <!-- OUTLOOK QUADRANT -->
+    <div class="wrap">
+      <section id="quadrant" class="panel">
+        <div class="panel-head">
+          <h2>🧭 Outlook quadrant</h2>
+          <span class="trends-sub">Headlines mapped by tone × predictability · hover for title, click to open</span>
+        </div>
+        <div id="quadrant-legend" class="graph-legend"></div>
+        <div id="quadrant-plot" class="quadrant-plot"></div>
+        <p class="source-note">
+          Each headline is scored 0–1 on <strong>predictability</strong> (uncertain ↔ predictable) and
+          <strong>sentiment</strong> (negative ↔ positive) by the AI model — with a keyword heuristic fallback
+          when AI is off. Interpretive, not exact.
+        </p>
+      </section>
+    </div>
+
+    <!-- SUBSCRIBE -->
+    <section id="subscribe" class="subscribe">
+      <div class="wrap subscribe-inner">
+        <div class="subscribe-copy">
+          <h2>Get the weekly AI digest</h2>
+          <p>One email a week: the most important papers and news, summarized. No spam, unsubscribe anytime.</p>
+        </div>
+        <form id="newsletter-form" class="subscribe-form" novalidate>
+          <div class="field">
+            <label class="sr-only" for="email">Email address</label>
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email"
+                   placeholder="you@example.com" required />
+            <button class="btn btn-primary" type="submit">Subscribe</button>
+          </div>
+          <p id="form-msg" class="form-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>AI Pulse · Data from arXiv &amp; Hacker News</p>
+      <p class="copyright">© Yvonne Leung AI Consulting Inc. 2026. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
