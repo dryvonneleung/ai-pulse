@@ -8,17 +8,26 @@ figures are all vector/PNG simply return 404 (the frontend hides the thumb).
 
 import base64
 import io
+import json
 import re
 import urllib.parse
 import urllib.request
 from http.server import BaseHTTPRequestHandler
 
-from _lib import send_json
-
 try:
     from PIL import Image
 except Exception:  # noqa: BLE001
     Image = None
+
+
+def send_json(h, obj, status=200):
+    body = json.dumps(obj).encode("utf-8")
+    h.send_response(status)
+    h.send_header("Content-Type", "application/json; charset=utf-8")
+    h.send_header("Content-Length", str(len(body)))
+    h.end_headers()
+    h.wfile.write(body)
+
 
 ID_RE = re.compile(r"[0-9]{4}\.[0-9]{4,5}(v[0-9]+)?")
 _cache = {}

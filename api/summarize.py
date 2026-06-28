@@ -1,6 +1,60 @@
+import json
+import os
+import re
+import urllib.request
 from http.server import BaseHTTPRequestHandler
 
-from _lib import NVIDIA_API_KEY, call_nvidia, fetch_article_text, read_json, send_json
+NVIDIA_API_KEY = os.environ.get("NVIDIA_API_KEY", "").strip()
+NVIDIA_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+NVIDIA_MODEL = os.environ.get("NVIDIA_MODEL", "meta/llama-3.1-8b-instruct")
+
+
+def send_json(h, obj, status=200):
+    body = json.dumps(obj).encode("utf-8")
+    h.send_response(status)
+    h.send_header("Content-Type", "application/json; charset=utf-8")
+    h.send_header("Content-Length", str(len(body)))
+    h.end_headers()
+    h.wfile.write(body)
+
+
+def call_nvidia(prompt, max_tokens=1024, temperature=0.3):
+    body = json.dumps({
+        "model": NVIDIA_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        NVIDIA_URL, data=body,
+        headers={
+            "Authorization": f"Bearer {NVIDIA_API_KEY}",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=55) as resp:
+        data = json.loads(resp.read())
+    content = data["choices"][0]["message"].get("content", "") or ""
+    content = re.sub(r"(?is)<think>.*?</think>", "", content)
+    content = re.sub(r"(?is)^.*?</think>", "", content)
+    return content.strip()
+
+
+def fetch_article_text(url):
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "AI-Pulse/1.0"})
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            ctype = resp.headers.get("Content-Type", "")
+            if "html" not in ctype and "text" not in ctype:
+                return ""
+            raw = resp.read(200_000).decode("utf-8", "ignore")
+    except Exception:  # noqa: BLE001
+        return ""
+    raw = re.sub(r"(?is)<(script|style|head).*?</\1>", " ", raw)
+    text = re.sub(r"(?s)<[^>]+>", " ", raw)
+    return re.sub(r"\s+", " ", text).strip()
 
 
 class handler(BaseHTTPRequestHandler):
@@ -9,7 +63,8 @@ class handler(BaseHTTPRequestHandler):
             send_json(self, {"error": "AI summaries disabled (no NVIDIA_API_KEY set)."}, 503)
             return
         try:
-            payload = read_json(self)
+            length = int(self.headers.get("Content-Length", 0))
+            payload = json.loads(self.rfile.read(length) or b"{}")
         except Exception:  # noqa: BLE001
             send_json(self, {"error": "Invalid request body."}, 400)
             return

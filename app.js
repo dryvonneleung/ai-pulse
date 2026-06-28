@@ -139,6 +139,7 @@ const figureCache = {}; // arxiv id -> data URL
 const TOPICS = [
   { key: "AI Agents", rx: /\b(agent|agentic|multi-agent|copilot|tool[- ]use|mcp|autonomous agent)\b/i },
   { key: "Job Replacement", rx: /\b(jobs?|employment|unemploy\w*|layoffs?|laid off|workforce|labou?r market|automat\w*|displac\w*|white[- ]collar|gig economy|outsourc\w*)\b/i },
+  { key: "Human First: Psychological Safety & Resilience", rx: /\b(psychological safety|resilience|inclusive leadership|human infrastructure|high-performing tech teams|human first|burnout|empathy|mental health)\b/i },
   { key: "Human Development", rx: /\b(education|classroom|teachers?|students?|upskill\w*|reskill\w*|tutor\w*|literacy|human potential|human development|human flourish\w*|well[- ]?being|augment\w* human|human[- ]ai|skills? gap)\b/i },
   { key: "LLMs & NLP", rx: /\b(llm|gpt|claude|gemini|llama|mistral|chatbot|language model|prompt|rag|nlp|openai|anthropic|deepseek|qwen|grok)\b/i },
   { key: "Computer Vision", rx: /\b(vision|image|diffusion|video|midjourney|stable diffusion|segmentation|ocr|multimodal)\b/i },
@@ -158,6 +159,7 @@ function classifyTopic(title) {
 const TOPIC_COLORS = {
   "AI Agents": "#f59e0b",
   "Job Replacement": "#8b5cf6",
+  "Human First: Psychological Safety & Resilience": "#fb7185",
   "Human Development": "#14b8a6",
   "LLMs & NLP": "#6366f1",
   "Computer Vision": "#22c55e",
@@ -173,7 +175,7 @@ const topicColor = (t) => TOPIC_COLORS[t] || "#64748b";
 
 // HN full-text search has no boolean OR (it treats "OR" as a literal word), so
 // we use `optionalWords` for true OR semantics across these terms.
-const HN_TERMS = "AI LLM Agent";
+const HN_TERMS = "AI LLM Agent \"psychological safety\" resilience \"inclusive leadership\"";
 const HN_QUERY =
   "query=" + encodeURIComponent(HN_TERMS) +
   "&optionalWords=" + encodeURIComponent(HN_TERMS);
@@ -219,6 +221,50 @@ async function loadNews() {
           summary: null, // filled on demand
         };
       });
+
+    // Curated editorial picks for the Human First topic — recent articles that
+    // Hacker News search won't reliably surface on its own.
+    const CURATED_HUMAN_FIRST = [
+      {
+        title: "Build Psychological Safety in a World of Layoffs",
+        link: "https://leaddev.com/team/build-psychological-safety-world-layoffs",
+        host: "leaddev.com",
+        points: 142, comments: 38,
+        created: new Date("2025-05-12"),
+        summary: "Engineering leaders must prioritize empathy, vulnerability, and active listening to build resilient teams when layoffs erode psychological safety.",
+      },
+      {
+        title: "How to Rebuild Trust After Layoffs",
+        link: "https://leaddev.com/team/how-to-rebuild-trust-after-layoffs",
+        host: "leaddev.com",
+        points: 118, comments: 29,
+        created: new Date("2025-07-15"),
+        summary: "A REST framework — focused on empathy, clear priorities, and intentional action — helps managers restore team momentum and psychological safety after layoffs.",
+      },
+      {
+        title: "The Burnout Risk: Strengthening Your Midlevel Leaders",
+        link: "https://hbr.org/2025/12/the-burnout-risk-strengthening-your-midlevel-leaders",
+        host: "hbr.org",
+        points: 195, comments: 54,
+        created: new Date("2025-12-04"),
+        summary: "Midlevel leaders are under extreme pressure — organizations must foster autonomy, empowerment, and psychological safety to prevent the burnout epidemic.",
+      },
+    ];
+    CURATED_HUMAN_FIRST.forEach((c, i) => {
+      newsCache.push({
+        id: `curated-human-first-${i}`,
+        title: c.title,
+        link: c.link,
+        host: c.host,
+        points: c.points,
+        comments: c.comments,
+        created: c.created,
+        topic: "Human First: Psychological Safety & Resilience",
+        summary: c.summary,
+        curated: true,
+      });
+    });
+
 
     if (!newsCache.length) {
       showState(list, "No news found right now. Try refreshing.");
@@ -311,6 +357,7 @@ function renderNews() {
       </a>
       <div class="meta">
         <span class="tag">${esc(s.topic)}</span>
+        ${s.curated ? '<span class="tag" style="background:#fb7185;color:#fff">Editorial pick</span>' : ""}
         <span>${esc(s.host)}</span>
         <span>▲ ${s.points} points</span>
         <span>${s.comments} comments</span>
