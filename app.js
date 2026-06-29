@@ -227,7 +227,7 @@ async function loadNews() {
     const CURATED_HUMAN_FIRST = [
       {
         title: "Build Psychological Safety in a World of Layoffs",
-        link: "https://leaddev.com/team/build-psychological-safety-world-layoffs",
+        link: "https://leaddev.com/culture/build-psychological-safety-world-layoffs",
         host: "leaddev.com",
         points: 142, comments: 38,
         created: new Date("2025-05-12"),
@@ -235,7 +235,7 @@ async function loadNews() {
       },
       {
         title: "How to Rebuild Trust After Layoffs",
-        link: "https://leaddev.com/team/how-to-rebuild-trust-after-layoffs",
+        link: "https://leaddev.com/layoff-anxiety/how-rebuild-trust-after-layoffs",
         host: "leaddev.com",
         points: 118, comments: 29,
         created: new Date("2025-07-15"),
@@ -243,8 +243,8 @@ async function loadNews() {
       },
       {
         title: "The Burnout Risk: Strengthening Your Midlevel Leaders",
-        link: "https://hbr.org/2025/12/the-burnout-risk-strengthening-your-midlevel-leaders",
-        host: "hbr.org",
+        link: "https://www.harvardbusiness.org/insight/the-burnout-risk-strengthening-your-midlevel-leaders/",
+        host: "harvardbusiness.org",
         points: 195, comments: 54,
         created: new Date("2025-12-04"),
         summary: "Midlevel leaders are under extreme pressure — organizations must foster autonomy, empowerment, and psychological safety to prevent the burnout epidemic.",
